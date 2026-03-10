@@ -36,12 +36,13 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        Input.gyro.enabled = true;
     }
 
     void Update()
     {
         // Ice movement
-        float input = Input.GetAxis("Horizontal");
+        float input = Input.gyro.gravity.x;
         if (Mathf.Abs(input) > 0.01f)
             xVelocity = Mathf.MoveTowards(xVelocity, input * horizontalSpeed, acceleration * Time.deltaTime);
         else

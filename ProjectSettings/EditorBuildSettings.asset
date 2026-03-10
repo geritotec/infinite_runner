@@ -4,5 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 8efc605298f701245841bfb3a392e5e1
+  - enabled: 1
+    path: Assets/Scenes/CuevaFuego.unity
+    guid: a75e95f8d73b3264c8a5eb97ce21eea8
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

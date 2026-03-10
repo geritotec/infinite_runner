@@ -197,7 +197,7 @@ CapsuleCollider:
   m_Radius: 0.2
   m_Height: 1
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.48, z: 0}
 --- !u!1 &821458222
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +234,7 @@ MonoBehaviour:
   worldSpeed: 15
   maxWorldSpeed: 40
   speedIncreaseRate: 0.5
-  chunksOnScreen: 4
+  chunksOnScreen: 12
   despawnZ: -350
   freezeDuration: 1.5
   recoveryRate: 5
@@ -242,7 +242,9 @@ MonoBehaviour:
   rowSpacing: 5
   elevationStep: 2.5
   foundationDepth: 10
-  trackMaterial: {fileID: 2100000, guid: 224df2b38c151964a9ba59ffe1326115, type: 2}
+  trackMaterial: {fileID: 2100000, guid: 55bc30b94344035428891efa07f3548b, type: 2}
+  bounceDuration: 0.3
+  bounceSpeed: 10
   obstacleYOffset: 0.5
   obstaclePrefabs:
   - {fileID: 0}
