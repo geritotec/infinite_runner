@@ -1,0 +1,23 @@
+{
+  "rows": [
+    { "terrainLanes": [0, 0, 0], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [0, 0, 0], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [0, 0, 0], "obstacleLanes": [0, 0, 1] },
+    { "terrainLanes": [0, 0, 0], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [0, 0, 0], "obstacleLanes": [1, 0, 0] },
+    { "terrainLanes": [0, 0, 0], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [0, 0, 0], "obstacleLanes": [0, 0, 1] },
+    { "terrainLanes": [0, 0, 0], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [2, 0, 0], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [2, 0, 0], "obstacleLanes": [0, 1, 0] },
+    { "terrainLanes": [2, 0, 0], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [0, 0, 2], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [0, 0, 2], "obstacleLanes": [0, 1, 0] },
+    { "terrainLanes": [0, 0, 2], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [2, 0, 0], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [2, 0, 0], "obstacleLanes": [0, 2, 0] },
+    { "terrainLanes": [2, 0, 0], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [0, 0, 0], "obstacleLanes": [0, 0, 0] },
+    { "terrainLanes": [0, 0, 0], "obstacleLanes": [0, 0, 0] }
+  ]
+}
