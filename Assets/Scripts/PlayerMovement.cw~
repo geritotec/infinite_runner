@@ -31,68 +31,58 @@ public class PlayerMovement : MonoBehaviour
 
     private float xVelocity;
     private float yVelocity;
-    private float groundedBuffer = 0f;
-    private const float groundedGrace = 0.1f;
     private CharacterController controller;
-    private bool useGyro = false;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
-        useGyro = SystemInfo.supportsGyroscope;
-        if (useGyro) Input.gyro.enabled = true;
+        Input.gyro.enabled = true;
     }
 
     void Update()
     {
-        // Movement input
-        float input = useGyro ? Input.gyro.gravity.x : Input.GetAxisRaw("Horizontal");
+        // Ice movement
+        float input = 0f;
+        if (SystemInfo.supportsGyroscope && Input.gyro.enabled)
+            input = Input.gyro.gravity.x;
+        else
+            input = Input.GetAxisRaw("Horizontal");
 
         if (Mathf.Abs(input) > 0.01f)
             xVelocity = Mathf.MoveTowards(xVelocity, input * horizontalSpeed, acceleration * Time.deltaTime);
         else
             xVelocity = Mathf.MoveTowards(xVelocity, 0f, deceleration * Time.deltaTime);
 
-        // Grounded + coyote time
-        if (controller.isGrounded && yVelocity < 0f)
+        // Jump & gravity
+        if (controller.isGrounded)
         {
             yVelocity = -1f;
-            groundedBuffer = groundedGrace;
-        }
-        else if (!controller.isGrounded)
-        {
-            groundedBuffer -= Time.deltaTime;
-        }
 
-        // Jump
-        bool jumpPressed;
-        if (useGyro)
-            jumpPressed = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
-        else
-            jumpPressed = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W);
+            bool jumpPressed = SystemInfo.supportsGyroscope && Input.gyro.enabled
+                ? Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began
+                : Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W);
 
-        if (jumpPressed && groundedBuffer > 0f)
-        {
-            yVelocity = jumpForce;
-            groundedBuffer = 0f;
+            if (jumpPressed)
+                yVelocity = jumpForce;
         }
-
         yVelocity += gravity * Time.deltaTime;
 
-        // Clamp X inside the delta â€” never touch transform.position directly
-        float desiredX = transform.position.x + xVelocity * Time.deltaTime;
-        float clampedX = Mathf.Clamp(desiredX, -xBoundary, xBoundary);
-        float xDelta = clampedX - transform.position.x;
+        controller.Move(new Vector3(xVelocity * Time.deltaTime, yVelocity * Time.deltaTime, 0));
 
-        // Z delta cancels any Z drift each frame
-        float zDelta = -transform.position.z;
+        // Clamp X
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, -xBoundary, xBoundary);
+        pos.z = 0f;
+        controller.enabled = false;
+        transform.position = pos;
+        controller.enabled = true;
 
-        controller.Move(new Vector3(xDelta, yVelocity * Time.deltaTime, zDelta));
-
-        // Hit detection
+        // Hit detection — catches anything on obstacleLayer (obstacles AND wall colliders)
+    // Replace the OverlapSphere block in Update()
         Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, obstacleLayer);
         foreach (Collider col in hits)
         {
+            // WallSide just blocks physically ¿ everything else triggers bounce
             if (col.name != "WallSide")
             {
                 OnPlayerHit?.Invoke();

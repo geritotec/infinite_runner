@@ -36,7 +36,8 @@ public class LevelManager : MonoBehaviour
     public float bounceDuration = 0.3f;
     private float bounceTimer = 0f;
     private bool isBouncing = false;
-    public float bounceSpeed = 10f;
+        public float bounceSpeed = 10f;
+
 
     [Header("Obstacles")]
     public float obstacleYOffset = 0.5f;
@@ -133,7 +134,7 @@ public class LevelManager : MonoBehaviour
 
                 float xCenter = (x - centerOffset) * laneWidth;
 
-                // Forward wall ¿ player runs into this, triggers bounce
+                // Forward wall — cliff the player runs into
                 if (z + 1 < gridRows.Length)
                 {
                     int next = gridRows[z + 1].terrainLanes[x];
@@ -142,14 +143,13 @@ public class LevelManager : MonoBehaviour
                     {
                         float bottom = cur * elevationStep;
                         float height = (next - cur) * elevationStep;
-                        SpawnWallCube(parent,
+                        MakeWallBox(parent,
                             new Vector3(xCenter, bottom + height / 2f, (z + 1) * rowSpacing),
-                            new Vector3(laneWidth, height, 0.2f),
-                            isForward: true);
+                            new Vector3(laneWidth, height, 0.2f));
                     }
                 }
 
-                // Side walls ¿ block physically, no bounce
+                // Side walls — lateral cliffs
                 foreach (int nx in new int[] { x - 1, x + 1 })
                 {
                     if (nx < 0 || nx >= laneCount) continue;
@@ -160,30 +160,22 @@ public class LevelManager : MonoBehaviour
                         float xFace = ((x - centerOffset) + (nx - centerOffset)) / 2f * laneWidth;
                         float bottom = cur * elevationStep;
                         float height = (neighbor - cur) * elevationStep;
-                        SpawnWallCube(parent,
+                        MakeWallBox(parent,
                             new Vector3(xFace, bottom + height / 2f, z * rowSpacing + rowSpacing / 2f),
-                            new Vector3(0.2f, height, rowSpacing),
-                            isForward: false);
+                            new Vector3(0.2f, height, rowSpacing));
                     }
                 }
             }
         }
     }
 
-    private void SpawnWallCube(Transform parent, Vector3 localPos, Vector3 size, bool isForward)
+    private void MakeWallBox(Transform parent, Vector3 localPos, Vector3 size)
     {
-        GameObject w = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        w.name = isForward ? "WallForward" : "WallSide";
+        GameObject w = new GameObject("Wall");
         w.transform.SetParent(parent);
         w.transform.localPosition = localPos;
-        w.transform.localScale = size;
-        w.layer = obstacleLayerIndex;
-
-        Destroy(w.GetComponent<MeshRenderer>());
-        Destroy(w.GetComponent<MeshFilter>());
-
-        if (isForward)
-            w.AddComponent<ForwardWall>();
+        w.layer = obstacleLayerIndex; // Same layer as obstacle prefabs — OverlapSphere picks it up for free
+        w.AddComponent<BoxCollider>().size = size;
     }
 
     private Mesh BuildChunkMesh(GridRow[] gridRows, Transform chunkTransform)
