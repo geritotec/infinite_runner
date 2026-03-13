@@ -1,0 +1,2 @@
+C:\Users\a01425900\projects\tec\unity_projects\ejercicio_hugo3\infinite_runner\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\CMakeLists.txt
+C:\Users\a01425900\projects\tec\unity_projects\ejercicio_hugo3\infinite_runner\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\GameActivity\CMakeLists.txt

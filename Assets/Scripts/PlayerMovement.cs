@@ -42,7 +42,12 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         // Ice movement
-        float input = Input.gyro.gravity.x;
+        float input = 0f;
+        if (SystemInfo.supportsGyroscope && Input.gyro.enabled)
+            input = Input.gyro.gravity.x;
+        else
+            input = Input.GetAxisRaw("Horizontal");
+
         if (Mathf.Abs(input) > 0.01f)
             xVelocity = Mathf.MoveTowards(xVelocity, input * horizontalSpeed, acceleration * Time.deltaTime);
         else
@@ -52,7 +57,12 @@ public class PlayerMovement : MonoBehaviour
         if (controller.isGrounded)
         {
             yVelocity = -1f;
-            if (Input.GetButtonDown("Jump"))
+
+            bool jumpPressed = SystemInfo.supportsGyroscope && Input.gyro.enabled
+                ? Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began
+                : Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W);
+
+            if (jumpPressed)
                 yVelocity = jumpForce;
         }
         yVelocity += gravity * Time.deltaTime;
