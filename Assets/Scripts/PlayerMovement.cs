@@ -20,6 +20,10 @@ public class PlayerMovement : MonoBehaviour
     public float detectionRadius = 0.6f;
     public LayerMask obstacleLayer;
 
+    [Header("Ground Detection")]
+    public float groundCheckDistance = 0.2f;
+    public LayerMask groundLayer;
+
     [Header("Camera")]
     public Transform mainCamera;
     public Vector3 cameraOffset = new Vector3(0f, 4f, -7f);
@@ -53,13 +57,19 @@ public class PlayerMovement : MonoBehaviour
         else
             xVelocity = Mathf.MoveTowards(xVelocity, 0f, deceleration * Time.deltaTime);
 
-        // Grounded + coyote time
-        if (controller.isGrounded && yVelocity < 0f)
+        // Ground check via raycast — more reliable than controller.isGrounded
+        bool isGrounded = Physics.Raycast(
+            transform.position,
+            Vector3.down,
+            controller.height / 2f + groundCheckDistance,
+            groundLayer);
+
+        if (isGrounded && yVelocity < 0f)
         {
             yVelocity = -1f;
             groundedBuffer = groundedGrace;
         }
-        else if (!controller.isGrounded)
+        else if (!isGrounded)
         {
             groundedBuffer -= Time.deltaTime;
         }
@@ -79,13 +89,15 @@ public class PlayerMovement : MonoBehaviour
 
         yVelocity += gravity * Time.deltaTime;
 
-        // Clamp X inside the delta — never touch transform.position directly
+        // Clamp X inside the delta
         float desiredX = transform.position.x + xVelocity * Time.deltaTime;
         float clampedX = Mathf.Clamp(desiredX, -xBoundary, xBoundary);
         float xDelta = clampedX - transform.position.x;
 
-        // Z delta cancels any Z drift each frame
-        float zDelta = -transform.position.z;
+        // Only correct Z if it has drifted meaningfully
+        float zDelta = 0f;
+        if (Mathf.Abs(transform.position.z) > 0.01f)
+            zDelta = -transform.position.z;
 
         controller.Move(new Vector3(xDelta, yVelocity * Time.deltaTime, zDelta));
 

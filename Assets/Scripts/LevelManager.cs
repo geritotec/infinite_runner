@@ -107,6 +107,7 @@ public class LevelManager : MonoBehaviour
         GameObject chunk = new GameObject("Chunk");
         chunk.transform.position = new Vector3(0, 0, nextSpawnZ);
         chunk.transform.SetParent(this.transform);
+        chunk.layer = 3;
 
         Mesh mesh = BuildChunkMesh(data.rows, chunk.transform);
         chunk.AddComponent<MeshFilter>().mesh = mesh;
